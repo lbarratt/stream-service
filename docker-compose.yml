@@ -13,5 +13,12 @@ services:
     ports:
       - '3000:3000'
 
+  redis:
+    image: 'redis:alpine'
+    volumes:
+      - redis_data:/data
+
 volumes:
   api_node_modules:
+  redis_data:
+
