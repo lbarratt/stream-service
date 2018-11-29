@@ -7,6 +7,10 @@ app.use((ctx, next) => {
   ctx.body = 'Hello World'
 })
 
-app.listen({ port }, () => {
-  console.log(`🚀 Server ready at http://localhost:${port}`)
-})
+if (process.env.NODE_ENV !== 'test') {
+  app.listen({ port }, () => {
+    console.log(`🚀 Server ready at http://localhost:${port}`)
+  })
+}
+
+module.exports = app

@@ -1,5 +1,12 @@
+const request = require('supertest')
+
+const app = require('./index')
+
 describe('API Server', () => {
-  it('Does something', () => {
-    expect(true).toBe(true)
+  it('Does something', async () => {
+    const response = await request(app.callback())
+      .get('/')
+
+    expect(response.status).toBe(200)
   })
 })
