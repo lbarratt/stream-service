@@ -12,13 +12,15 @@ router.use(sessionMiddleware)
 router.use(redisMiddleware)
 
 router.use('/', async (ctx, next) => {
-  ctx.state.session = ctx.get(HEADERS.SESSION)
-  ctx.state.token = ctx.get(HEADERS.TOKEN)
-  ctx.state.streamName = `${ctx.state.session}:${ctx.state.token}`
-  ctx.state.streams = await ctx.state.redis.keys(`${ctx.state.session}:*`)
-  ctx.state.existingToken = ctx.state.streams.find(stream => stream === ctx.state.streamName)
+  const { state } = ctx
 
-  if (ctx.state.token && !ctx.state.existingToken) {
+  state.session = ctx.get(HEADERS.SESSION)
+  state.token = ctx.get(HEADERS.TOKEN)
+  state.streamName = `${state.session}:${state.token}`
+  state.streams = await state.redis.keys(`${state.session}:*`)
+  state.existingToken = state.streams.find(stream => stream === state.streamName)
+
+  if (state.token && !state.existingToken) {
     ctx.status = 401
     ctx.body = {
       errors: [
