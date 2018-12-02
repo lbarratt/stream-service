@@ -29,3 +29,11 @@ To run the test suite, run:
 | test | Run the test suite with `jest`. Supply arguments with `args=""` |
 | lint | Run the linter with `standard`. Supply arguments with `args=""` |
 
+# Environment Variables
+
+| Name | Description |
+| --- | --- |
+| STREAM_EXPIRY | Default `30`. Set how long a stream token should last before expiration, and how long it should be renewed for |
+| REDIS_HOST | The redis server hostname |
+| REDIS_PORT | The redis server port |
+
