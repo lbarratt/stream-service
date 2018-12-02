@@ -43,7 +43,7 @@ router.use('/', async (ctx, next) => {
 
     ctx.body = {
       session,
-      token: existingToken
+      token
     }
 
     return
