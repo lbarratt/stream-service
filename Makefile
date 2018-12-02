@@ -28,3 +28,5 @@ test:
 lint:
 	${RUN} yarn lint ${args}
 
+redis-cli:
+	${COMPOSE} run redis redis-cli -h redis

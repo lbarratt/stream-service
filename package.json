@@ -24,7 +24,9 @@
   "homepage": "https://github.com/lbarratt/stream-service#readme",
   "dependencies": {
     "koa": "^2.5.2",
-    "koa-router": "^7.4.0"
+    "koa-router": "^7.4.0",
+    "ioredis": "^4.2.0",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "jest": "^23.6.0",
