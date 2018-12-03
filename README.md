@@ -58,7 +58,7 @@ A basic healtcheck endpoint. Returns 200 OK.
 
 Get or create a stream token.
 
-To create a new token, send a request with a 'session' of any name:
+To create a new token, send a request with a 'session' of any name sent as the `X-Stream-Session` header e.g.
 
 ```
 curl "http://localhost:3000/streams" \
