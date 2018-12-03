@@ -5,6 +5,7 @@ const env = (name, fallback, transform) => {
 }
 
 module.exports = {
+  STREAM_EXPIRY: env('LOG_LEVEL', 'debug'),
   STREAM_EXPIRY: env('STREAM_EXPIRY', '30', parseInt),
   REDIS_HOST: env('REDIS_HOST', 'redis'),
   REDIS_PORT: env('REDIS_PORT', '6379', parseInt),

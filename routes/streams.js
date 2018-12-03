@@ -12,7 +12,7 @@ router.use(sessionMiddleware)
 router.use(redisMiddleware)
 
 router.use('/', async (ctx, next) => {
-  const { state } = ctx
+  const { state, logger } = ctx
 
   state.session = ctx.get(HEADERS.SESSION)
   state.token = ctx.get(HEADERS.TOKEN)
@@ -21,6 +21,8 @@ router.use('/', async (ctx, next) => {
   state.existingToken = state.streams.find(stream => stream === state.streamName)
 
   if (state.token && !state.existingToken) {
+    logger.info(`Token ${state.token} expired`)
+
     ctx.status = 401
     ctx.body = {
       errors: [
@@ -41,6 +43,8 @@ router.use('/', async (ctx, next) => {
   const { session, token, streamName, existingToken, redis } = ctx.state
 
   if (token && existingToken) {
+    ctx.logger.info(`Valid token for ${token} found.`)
+
     await redis.set(streamName, token, 'EX', STREAM_EXPIRY)
 
     ctx.body = {
@@ -55,9 +59,11 @@ router.use('/', async (ctx, next) => {
 })
 
 router.use('/', async (ctx, next) => {
-  const { streams } = ctx.state
+  const { session, streams } = ctx.state
 
   if (streams && streams.length >= 3) {
+    ctx.logger.info(`Session ${session} expired`)
+
     ctx.status = 401
     ctx.body = {
       errors: [
@@ -81,6 +87,8 @@ router.get('/', async (ctx, next) => {
     const newToken = UUID()
 
     await redis.set(`${session}:${newToken}`, newToken, 'EX', STREAM_EXPIRY)
+
+    ctx.logger.info(`New token ${newToken} for session ${session} issued`)
 
     ctx.body = {
       session,
