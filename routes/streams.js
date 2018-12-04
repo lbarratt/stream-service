@@ -16,6 +16,7 @@ router.use('/', async (ctx, next) => {
 
   state.session = ctx.get(HEADERS.SESSION)
   state.token = ctx.get(HEADERS.TOKEN)
+  state.timestamp = ctx.query.timestamp
   state.streamName = `${state.session}:${state.token}`
   state.streams = await state.redis.keys(`${state.session}:*`)
   state.existingToken = state.streams.find(stream => stream === state.streamName)
@@ -40,16 +41,36 @@ router.use('/', async (ctx, next) => {
 })
 
 router.use('/', async (ctx, next) => {
-  const { session, token, streamName, existingToken, redis } = ctx.state
+  const { session, token, timestamp, streamName, existingToken, redis } = ctx.state
 
   if (token && existingToken) {
+    const existingTimestamp = await redis.get(existingToken)
+
+    if (timestamp !== existingTimestamp) {
+      ctx.logger.info(`Mismatched timestamp for token: ${token}.`)
+
+      ctx.status = 401
+      ctx.body = {
+        errors: [
+          {
+            code: 4,
+            message: 'Timestamp does not match'
+          }
+        ]
+      }
+
+      return
+    }
+
     ctx.logger.info(`Valid token for ${token} found.`)
 
-    await redis.set(streamName, token, 'EX', STREAM_EXPIRY)
+    const refreshTimestamp = new Date().toJSON()
+    await redis.set(streamName, refreshTimestamp, 'EX', STREAM_EXPIRY)
 
     ctx.body = {
       session,
-      token
+      token,
+      timestamp: refreshTimestamp
     }
 
     return
@@ -85,14 +106,16 @@ router.get('/', async (ctx, next) => {
 
   if (!token) {
     const newToken = UUID()
+    const newTimestamp = new Date().toJSON()
 
-    await redis.set(`${session}:${newToken}`, newToken, 'EX', STREAM_EXPIRY)
+    await redis.set(`${session}:${newToken}`, newTimestamp, 'EX', STREAM_EXPIRY)
 
     ctx.logger.info(`New token ${newToken} for session ${session} issued`)
 
     ctx.body = {
       session,
-      token: newToken
+      token: newToken,
+      timestamp: newTimestamp
     }
   }
 })

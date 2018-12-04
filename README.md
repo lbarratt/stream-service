@@ -67,28 +67,29 @@ curl "http://localhost:3000/streams" \
      -H 'X-Stream-Session: s3ss10n'
 ```
 
-A new token should be returned, if you have not exceeded 3 tokens.
+A new token should be returned, along with a timestamp when it was created, if you have not exceeded 3 tokens.
 
 ```
 {
   "session": "s3ss10n",
-  "token": "a393bf57-6270-4d5f-9c67-2e4a19060c5d"
+  "token": "a393bf57-6270-4d5f-9c67-2e4a19060c5d",
+  "timestamp": "2018-12-04T09:45:08.279Z"
 }
 ```
 
 You can create upto 3 tokens with a 30 second time window, as configured by `STREAM_EXPIRY`.
 
-To refresh an existing token, call the same endpoint with the `X-Stream-Token` header:
+To refresh an existing token, call the same endpoint with the `X-Stream-Token` header, and pass the `timestamp` query parameter. This is intended to make it more difficult for a user to reverse engineer the API and share tokens.
 
 ```
-curl "http://localhost:3000/streams" \
+curl "http://localhost:3000/streams?timestamp=2018-12-04T09:45:08.279Z" \
      -H 'X-Stream-Session: s3ss10n' \
      -H 'X-Stream-Token: a393bf57-6270-4d5f-9c67-2e4a19060c5d'
 ```
 
-The same token should be returned back to you, as before.
+The same token should be returned back to you, with a new timestamp for any subsequent requests.
 
-If you do not specify a session, your token has expired, or you have exceed the maximum number of tokens, you will receive a 401 with the corresponding error message. e.g.
+If you do not specify a session, your token has expired, your timestamp does not match, or you have exceed the maximum number of tokens, you will receive a 401 with the corresponding error message. e.g.
 
 ```
 {
