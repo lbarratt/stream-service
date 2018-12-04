@@ -1,0 +1,48 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: streams-api-redis
+  labels:
+    app: redis
+    role: master
+    tier: backend
+spec:
+  ports:
+  - port: 6379
+    targetPort: 6379
+  selector:
+    app: streams-api-redis
+    role: master
+    tier: backend
+
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: streams-api-redis
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: streams-api-redis
+        role: master
+        tier: backend
+    spec:
+      containers:
+      - name: streams-api-redis
+        image: 'redis:alpine'
+        resources:
+          requests:
+            cpu: 1
+            memory: 512Mi
+        ports:
+        - containerPort: 6379
+        volumeMounts:
+        - name: streams-api-redis-volume
+          mountPath: /data
+
+      volumes:
+      - name: streams-api-redis-volume
+        emptyDir: {}

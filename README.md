@@ -1,5 +1,7 @@
 # Stream Service
 
+Temporary ELB URL: http://a6c832231f74811e8b47e02e69f5aada-706907864.eu-west-1.elb.amazonaws.com/streams
+
 # Setup
 
 Requirements:
@@ -98,4 +100,17 @@ If you do not specify a session, your token has expired, or you have exceed the 
   ]
 }
 ```
+
+# Deployment
+
+Deployment uses terraform to provision and deploy to a Kubernetes cluster on AWS using EKS.
+
+To get started, export the follow AWS environment variables for an IAM user with access to AutoScaling, EC2, EKS, and IAM.
+
+```
+export AWS_ACCESS_KEY_ID="anaccesskey"
+export AWS_SECRET_ACCESS_KEY="asecretkey"
+```
+
+Then run `make deploy` to initialise terraform, apply any changes to the Kubernetes cluster and finally deploy the Stream API pods.
 

@@ -4,6 +4,7 @@
   "description": "A streaming service API.",
   "main": "index.js",
   "scripts": {
+    "start": "node .",
     "dev": "nodemon . -L",
     "test": "NODE_ENV=test LOG_LEVEL=error jest",
     "lint": "standard"

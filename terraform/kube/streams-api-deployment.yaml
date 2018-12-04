@@ -1,0 +1,26 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: streams-api-deployment
+spec:
+  replicas: 4
+  template:
+    metadata:
+      name: streams-api-pods
+      labels:
+        app: streams-api
+    spec:
+      containers:
+        - name: streams-api
+          command:
+            - yarn
+            - start
+          image: {REGISTRY_URL}
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 3000
+          env:
+          - name: NODE_ENV
+            value: 'production'
+          - name: REDIS_HOST
+            value: 'streams-api-redis'

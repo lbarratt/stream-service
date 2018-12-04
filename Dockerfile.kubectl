@@ -1,0 +1,9 @@
+FROM lachlanevenson/k8s-kubectl AS kubectl
+FROM golang:alpine
+
+COPY --from=kubectl /usr/local/bin/kubectl /usr/local/bin/kubectl
+
+RUN apk add --no-cache git
+
+RUN go get -u -v github.com/kubernetes-sigs/aws-iam-authenticator/cmd/aws-iam-authenticator
+
