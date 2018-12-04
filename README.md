@@ -122,3 +122,12 @@ Further improvements could be made, given more time:
 - Migrate k8s provisioning to use a Terraform module
 - Migrate Terraform state to S3
 - Migrate local k8s yaml files to Helm charts and a Helm repository on S3
+
+## Monitoring, Logging & Debugging
+
+The project uses winston as a JSON logger, at the moment it is just logging basic information to STDOUT. The get the service production ready, the next step would be to create a CloudWatch log group, and utilise the [Cloudwatch winston logger transport](https://github.com/lazywithclass/winston-cloudwatch). Further logging output should be added so that a request can be traced down to a specific session, token and Kubernetes pod.
+
+The X-Ray SDK for node could also be added to capture segments, and gather data around API performance.
+
+Debugging can be achieved by enabling `node --inspect` in production, and then connecting with a local debugger using `kubectl port-forward` to forward the appropriate port to a pod.
+
