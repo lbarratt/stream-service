@@ -112,5 +112,16 @@ export AWS_ACCESS_KEY_ID="anaccesskey"
 export AWS_SECRET_ACCESS_KEY="asecretkey"
 ```
 
-Then run `make deploy` to initialise terraform, apply any changes to the Kubernetes cluster and finally deploy the Stream API pods.
+Then run `make deploy` to initialise terraform, apply any changes to the Kubernetes cluster and finally deploy the Stream API pods. The whole process should take around 25 minutes for the first time, to allow AWS to provision resources and the time required to build and push a container image for the Stream API.
 
+## Considerations
+
+The deployment is a really basic EKS cluster with two m5.large nodes. It uses the bare minimum to get the cluster working with permissions to pull container images from ECR. Everything is entirely managed without local dependencies being required, they are instead managed through containers and a handful of `make` commands.
+
+The actual Stream API service runs on 4 containers accross both cluster nodes, with a single redis node/container pod to get something simple working. If time had allowed, redis could be managed via Elasticache or a Helm chart could have been used to manage a scalable cluster.
+
+Further improvements could be made, given more time:
+
+- Migrate k8s provisioning to use a Terraform module
+- Migrate Terraform state to S3
+- Migrate local k8s yaml files to Helm charts and a Helm repository on S3
