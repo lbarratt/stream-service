@@ -52,10 +52,6 @@ In the current implementation, the tokens expire after 30 seconds (configured by
 
 # Endpoints
 
-## GET /
-
-A basic healtcheck endpoint. Returns 200 OK.
-
 ## GET /streams
 
 Get or create a stream token.

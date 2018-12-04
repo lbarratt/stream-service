@@ -25,10 +25,6 @@ app.use(accessMiddleware)
 app.use(errorMiddleware)
 app.use(streamsRoutes.routes())
 
-app.use((ctx, next) => {
-  ctx.body = 'OK'
-})
-
 if (process.env.NODE_ENV !== 'test') {
   app.listen({ port }, () => {
     app.context.logger.info(`🚀 Server ready at http://localhost:${port}`)
